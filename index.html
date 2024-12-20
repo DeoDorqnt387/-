@@ -52,32 +52,45 @@
         <source src="audio/background.mp4" type="video/mp4">
         Your browser does not support the video element.
     </video>
+    
+    <!-- Modal HTML -->
+    <div id="musicModal" class="modal">
+        <div class="modal-content">
+            <h3>
+                <span>This website has music feature in it.</span>
+                <span style="display: block;">Do you want to turn it on?</span>
+            </h3>
+            <div class="modal-buttons">
+                <button id="musicOn" class="on-btn">Turn on</button>
+                <button id="musicOff" class="off-btn">Turn off</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener('click', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var audio = document.getElementById('myAudio');
-            var video = document.getElementById('myVideo');
-    
-            audio.play().then(() => {
-                video.style.display = 'block'; // Show the video
-                video.play(); // Play the video
-    
-                // Change the color of the buttons to white
-                const links = document.querySelectorAll('.link');
-                links.forEach(link => {
-                   // link.style.color = 'white'; // Set button text color to white
-                    //link.style.borderColor = 'white'; // Change border color to white if needed
-                });
+            var modal = document.getElementById('musicModal');
 
-                //document.querySelector('.userName').style.color = 'white';
-                //document.querySelector('.description').style.color = 'white';
-            }).catch(function(error) {
-                console.log('Playback prevented:', error);
+            modal.classList.add('show');
+            modal.style.display = "block";
+
+            // Music ON button
+            document.getElementById('musicOn').addEventListener('click', function () {
+                audio.play();
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = "none", 400); 
             });
-    
-            // Remove the event listener after the first click to prevent multiple plays
-            document.removeEventListener('click', arguments.callee);
+
+            // Music OFF button
+            document.getElementById('musicOff').addEventListener('click', function () {
+                audio.pause();
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = "none", 400); 
+            });
         });
+
+
     </script>
 </body>
 
