@@ -44,15 +44,32 @@
             <i class="fab fa-steam">&nbsp;</i>Steam
         </a>
     </div>
-    <audio id="myAudio" autoplay loop>
+
+    <!-- Music info display -->
+    <div id="musicInfo" class="music-info">
+        <i class="fas fa-music"></i>
+        <span id="currentTrack">Loading...</span>
+    </div>
+
+    <!-- Audio elements for different tracks -->
+    <audio id="track1" loop>
         <source src="audio/browndust2ost.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
-    <video id="myVideo" autoplay loop muted>
-        <source src="audio/background.mp4" type="video/mp4">
-        Your browser does not support the video element.
-    </video>
-    
+    <audio id="track2" loop>
+        <source src="audio/enderliliesharmony.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="track3" loop>
+        <source src="audio/enderliliesLily.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Rain overlay -->
+    <div id="rainOverlay" class="rain-overlay">
+        <video id="rainVideo" loop muted>
+            <source src="audio/rain.mp4" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
+    </div>
+
     <!-- Modal HTML -->
     <div id="musicModal" class="modal">
         <div class="modal-content">
@@ -69,28 +86,146 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var audio = document.getElementById('myAudio');
-            var modal = document.getElementById('musicModal');
+            const musicTracks = [
+                {
+                    id: 'track1',
+                    name: 'Brown Dust 2 - Main Theme OST',
+                    probability: 10,
+                    hasRain: false
+                },
+                {
+                    id: 'track2', 
+                    name: 'Ender Lilies - Harmony',
+                    probability: 50,
+                    hasRain: true
+                },
+                {
+                    id: 'track3', 
+                    name: 'Ender Lilies - Lily',
+                    probability: 40,
+                    hasRain: true
+                }
+            ];
 
-            modal.classList.add('show');
-            modal.style.display = "block";
+            let selectedTrack = null;
+            let musicEnabled = false;
 
-            // Music ON button
+            // Random track selection based on probability
+            function selectRandomTrack() {
+                const random = Math.random() * 100;
+                let cumulativeProbability = 0;
+                
+                for (let track of musicTracks) {
+                    cumulativeProbability += track.probability;
+                    if (random <= cumulativeProbability) {
+                        return track;
+                    }
+                }
+                
+                return musicTracks[0];
+            }
+
+            // Initialize system
+            function initializeMusic() {
+                selectedTrack = selectRandomTrack();
+                const modal = document.getElementById('musicModal');
+                
+                // Show modal
+                modal.style.display = "flex";
+                setTimeout(() => modal.classList.add('show'), 100);
+            }
+
+            function startMusic() {
+                if (!selectedTrack || !musicEnabled) return;
+                
+                const audioElement = document.getElementById(selectedTrack.id);
+                const musicInfo = document.getElementById('musicInfo');
+                const currentTrackSpan = document.getElementById('currentTrack');
+                const rainOverlay = document.getElementById('rainOverlay');
+                const rainVideo = document.getElementById('rainVideo');
+                
+                // Handle rain overlay
+                if (selectedTrack.hasRain) {
+                    rainOverlay.classList.add('active');
+                    rainVideo.play();
+                } else {
+                    rainOverlay.classList.remove('active');
+                    rainVideo.pause();
+                }
+
+                // Update music info
+                currentTrackSpan.textContent = selectedTrack.name + (selectedTrack.hasRain ? ' ' : '');
+                
+                // Show music info with animation
+                setTimeout(() => {
+                    musicInfo.classList.add('show');
+                }, 1000);
+
+                // Play selected track
+                audioElement.play().then(() => {
+                    console.log(`🎵 Playing: ${selectedTrack.name}`);
+                }).catch(error => {
+                    console.log('Hata olmak müzik (türkçemi sevim):', error);
+                });
+
+                // Auto-hide music info after 5 seconds
+                setTimeout(() => {
+                    musicInfo.classList.remove('show');
+                }, 6000);
+            }
+
+            // Modal event handlers
             document.getElementById('musicOn').addEventListener('click', function () {
-                audio.play();
+                const modal = document.getElementById('musicModal');
+                musicEnabled = true;
+                startMusic();
                 modal.classList.remove('show');
-                setTimeout(() => modal.style.display = "none", 400); 
+                setTimeout(() => modal.style.display = "none", 400);
             });
 
-            // Music OFF button
             document.getElementById('musicOff').addEventListener('click', function () {
-                audio.pause();
+                const modal = document.getElementById('musicModal');
+                musicEnabled = false;
+                
+                // Remove rain overlay
+                const rainOverlay = document.getElementById('rainOverlay');
+                rainOverlay.classList.remove('active');
+                
                 modal.classList.remove('show');
-                setTimeout(() => modal.style.display = "none", 400); 
+                setTimeout(() => modal.style.display = "none", 400);
             });
+
+            // Start the system
+            initializeMusic();
+
+            // M key to toggle music info
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'm' || e.key === 'M') {
+                    const musicInfo = document.getElementById('musicInfo');
+                    musicInfo.classList.toggle('show');
+                }
+            });
+
+            // R key to toggle rain overlay manually - Optional
+        /*
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'r' || e.key === 'R') {
+                    const rainOverlay = document.getElementById('rainOverlay');
+                    const rainVideo = document.getElementById('rainVideo');
+                    
+                    if (rainOverlay.classList.contains('active')) {
+                        rainOverlay.classList.remove('active');
+                        rainVideo.pause();
+                        console.log(' Rain overlay disabled manually');
+                    } else {
+                        rainOverlay.classList.add('active');
+                        rainVideo.play();
+                        console.log(' Rain overlay enabled manually');
+                    }
+                }
+            });
+        */
         });
-
-
     </script>
 </body>
 
