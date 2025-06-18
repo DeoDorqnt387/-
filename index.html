@@ -64,12 +64,22 @@
     <audio id="track4" loop>
         <source src="audio/taktopsymphonybgmofdestiny.mp3" type="audio/mpeg">
     </audio>
-
+    <audio id="track5" loop>
+        <source src="audio/game-bgm_01.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- Rain overlay -->
     <div id="rainOverlay" class="rain-overlay">
         <video id="rainVideo" loop muted>
             <source src="audio/rain.mp4" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
+    </div>
+
+    <!-- Takt Op Opening overlay -->
+    <div id="taktOpOverlay" class="takt-op-overlay">
+        <video id="taktOpVideo" loop muted>
+            <source src="audio/taktopopening.mp4" type="video/mp4">
             Your browser does not support the video element.
         </video>
     </div>
@@ -94,26 +104,37 @@
                 {
                     id: 'track1',
                     name: 'Brown Dust 2 - Main Theme OST',
-                    probability: 10,
-                    hasRain: false
+                    probability: 15,
+                    hasRain: false,
+                    hasTaktOpOpening: false
                 },
                 {
                     id: 'track2', 
                     name: 'Ender Lilies - Harmony',
-                    probability: 50,
-                    hasRain: true
+                    probability: 25,
+                    hasRain: true,
+                    hasTaktOpOpening: false
                 },
                 {
                     id: 'track3', 
                     name: 'Ender Lilies - Lily',
-                    probability: 30,
-                    hasRain: true
+                    probability: 25,
+                    hasRain: true,
+                    hasTaktOpOpening: false
                 },
                 {
                     id: 'track4', 
-                    name: 'Symphony No.5 in c minor Op.67 "Destiny(Unmei) Cosette..."',
-                    probability: 50,
-                    hasRain: false
+                    name: 'Symphony No.5 in c minor Op.67',
+                    probability: 30,
+                    hasRain: false,
+                    hasTaktOpOpening: false
+                },
+                {
+                    id: 'track5',
+                    name: 'ゲームBGM1',
+                    probability: 35,
+                    hasRain: false,
+                    hasTaktOpOpening: false
                 }
             ];
 
@@ -153,6 +174,8 @@
                 const currentTrackSpan = document.getElementById('currentTrack');
                 const rainOverlay = document.getElementById('rainOverlay');
                 const rainVideo = document.getElementById('rainVideo');
+                const taktOpOverlay = document.getElementById('taktOpOverlay');
+                const taktOpVideo = document.getElementById('taktOpVideo');
                 
                 // Handle rain overlay
                 if (selectedTrack.hasRain) {
@@ -161,6 +184,15 @@
                 } else {
                     rainOverlay.classList.remove('active');
                     rainVideo.pause();
+                }
+
+                // Handle Takt Op opening overlay
+                if (selectedTrack.hasTaktOpOpening) {
+                    taktOpOverlay.classList.add('active');
+                    taktOpVideo.play();
+                } else {
+                    taktOpOverlay.classList.remove('active');
+                    taktOpVideo.pause();
                 }
 
                 // Update music info
@@ -197,9 +229,11 @@
                 const modal = document.getElementById('musicModal');
                 musicEnabled = false;
                 
-                // Remove rain overlay
+                // Remove both overlays
                 const rainOverlay = document.getElementById('rainOverlay');
+                const taktOpOverlay = document.getElementById('taktOpOverlay');
                 rainOverlay.classList.remove('active');
+                taktOpOverlay.classList.remove('active');
                 
                 modal.classList.remove('show');
                 setTimeout(() => modal.style.display = "none", 400);
@@ -215,26 +249,6 @@
                     musicInfo.classList.toggle('show');
                 }
             });
-
-            // R key to toggle rain overlay manually - Optional
-        /*
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'r' || e.key === 'R') {
-                    const rainOverlay = document.getElementById('rainOverlay');
-                    const rainVideo = document.getElementById('rainVideo');
-                    
-                    if (rainOverlay.classList.contains('active')) {
-                        rainOverlay.classList.remove('active');
-                        rainVideo.pause();
-                        console.log(' Rain overlay disabled manually');
-                    } else {
-                        rainOverlay.classList.add('active');
-                        rainVideo.play();
-                        console.log(' Rain overlay enabled manually');
-                    }
-                }
-            });
-        */
         });
     </script>
 </body>
