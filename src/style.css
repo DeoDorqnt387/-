@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.link-glow:hover {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+}
+
+@media (max-width: 768px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+    .grid-cols-2{
+        grid-template-columns: (2,1fr);
+    }
+}
+
